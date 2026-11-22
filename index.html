@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>The Food Plate Diner</title>
+<style>
+:root{--cream:#fff3d6;--red:#d62839;--teal:#1fa6a6;--navy:#1b2a49;--sun:#ffd23f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+input{user-select:text;-webkit-user-select:text}
+button{font-family:inherit;touch-action:manipulation;cursor:pointer}
+html{height:100dvh}
+body{margin:0;height:100%;display:flex;flex-direction:column;overflow:hidden;background:var(--cream);color:var(--navy);font:600 24px/1.4 "Trebuchet MS",Verdana,sans-serif}
+header{flex:none;background:var(--teal);border-bottom:5px solid var(--navy)}
+.bar{display:flex;align-items:center;gap:12px;padding:8px 20px;flex-wrap:wrap}
+.strip{height:14px;background:repeating-conic-gradient(var(--navy) 0 25%,var(--cream) 0 50%) 0 0/28px 28px}
+h1{font:italic 800 34px Georgia,serif;color:#fff;text-shadow:3px 3px 0 var(--navy);margin:0 10px 0 0}
+.pill{padding:6px 18px;border:3px solid var(--navy);border-radius:30px;background:#fff;font-size:21px;cursor:pointer}
+.pill.on{background:var(--red);color:#fff}.pill.done{background:var(--sun)}
+.hud{margin-left:auto;display:flex;gap:10px}
+.hud b{background:#fff;border:3px solid var(--navy);border-radius:14px;padding:2px 14px;font-size:24px}
+main{flex:1;min-height:0;overflow-y:scroll;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;padding:22px 26px 120px}
+.card{background:#fff;border:4px solid var(--navy);border-radius:22px;box-shadow:6px 6px 0 var(--navy);padding:18px 24px;margin-bottom:20px}
+.tk{background:#fffbe8;border-style:dashed}
+h2{font:italic 800 36px Georgia,serif;margin:0 0 10px;color:var(--red)}
+p{margin:6px 0 14px}
+.who{color:#0b7a7a;margin-top:6px}
+.frame{font:italic 800 34px Georgia,serif;color:var(--red);margin-top:6px}
+.btn{min-height:68px;padding:10px 28px;border:4px solid var(--navy);border-radius:18px;background:var(--red);color:#fff;font-size:27px;font-weight:800;box-shadow:0 6px 0 var(--navy)}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--navy)}
+.btn.alt{background:var(--teal)}.btn.ghost{background:#fff;color:var(--navy)}
+.names input{font:700 28px "Trebuchet MS",Verdana,sans-serif;height:68px;width:270px;border:4px solid var(--navy);border-radius:16px;padding:0 16px;margin:0 12px 16px 0;color:var(--navy)}
+.plate{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px}
+.grp{border:4px solid var(--navy);border-radius:22px;padding:12px 14px;box-shadow:5px 5px 0 var(--navy)}
+.fw{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.food{min-width:104px;min-height:104px;background:#fff;color:var(--navy);border:3px solid var(--navy);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 8px}
+.food span{font-size:48px;line-height:1.1}.food small{font-size:19px;font-weight:700}
+.food.sel{outline:6px solid var(--sun);transform:scale(1.08)}
+.fb{margin:14px 0;font-size:28px;font-weight:800}.fb.good{color:#1b7f3b}.fb.bad{color:var(--red)}.fb:empty{display:none}
+#nx{margin-top:8px}
+.txt{font-size:30px;line-height:1.5;margin:8px 0 16px}
+.txt i{font-style:normal;color:#e8590c;font-weight:800}
+mark{background:var(--sun);border-radius:6px;padding:0 4px}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.prog{display:flex;gap:10px;margin:0 0 16px}
+.prog span{width:46px;height:46px;border-radius:50%;border:4px solid var(--navy);background:#fff}
+.gb{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.gbtn{min-height:88px;border:4px solid var(--navy);border-radius:18px;font-size:26px;font-weight:800;box-shadow:0 6px 0 var(--navy);padding:8px 14px}
+.gbtn.sel{outline:6px solid var(--sun)}
+.tray{min-height:92px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;border:4px dashed var(--navy);border-radius:18px;padding:10px;margin-top:12px}
+.ph{color:#8a8a8a}
+.w{min-height:68px;font-size:30px;font-weight:800;padding:8px 20px;border:4px solid var(--navy);border-radius:16px;background:#fff;color:var(--navy);box-shadow:0 5px 0 var(--navy)}
+.bank{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:12px}
+.bank .w{background:var(--teal);color:#fff}
+.rec{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:12px}
+.rec div{border:4px solid var(--navy);border-radius:18px;padding:12px 16px;font-size:25px}
+.shake{animation:sh .4s}
+@keyframes sh{25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+</style></head><body>
+<header><div class=bar><h1>The Food Plate Diner</h1>
+<span class=pill id=p0 onclick=go(0)>Order up</span><span class=pill id=p1 onclick=go(1)>Match the menu</span><span class=pill id=p2 onclick=go(2)>Sentence chef</span>
+<div class=hud><b id=clock>⏱ 15:00</b><b id=st>⭐ 0</b></div></div><div class=strip></div></header>
+<main id=main></main>
+<script>
+const $=s=>document.querySelector(s),M=$('#main');
+let names=['','',''],turn=0,stars=0,stage=-1,left=900,tm,AC,ti=0,pk=[],xi=0,clue=0,si=0,tray=[],bank=[];
+const G=[['Fruit and vegetables','#3cb44b','#fff','🥦'],['Grains, cereals and potatoes','#f9e03a','#222','🍞'],['Dairy products','#0072bc','#fff','🥛'],['Meat, fish, nuts and eggs','#ed2024','#fff','🍗'],['Fats and sugars','#f47c3c','#fff','🍫']];
+const F=[['🥦','broccoli',0],['🥕','carrots',0],['🍌','bananas',0],['🍐','pears',0],['🧅','onions',0],['🥭','mangoes',0],
+['🍞','bread',1],['🥔','potatoes',1],['🍝','pasta',1],['🥣','cereal',1],
+['🥛','milk',2],['🧀','cheese',2],['🍦','ice cream',2],
+['🍗','chicken',3],['🐟','fish',3],['🥚','eggs',3],['🥜','nuts',3],['🥩','steak',3],
+['🍫','chocolate',4],['🥤','soft drinks',4],['🍪','biscuits',4],['🍰','cakes',4]];
+const T=[
+{q:'Find a food that you eat every day.',n:1,fr:'I eat ___ every day.',f:a=>`I eat ${a[0]} every day.`},
+{q:'Find two products made from milk.',n:2,ok:2,fr:'___ and ___ are made from milk.',f:a=>`${a[0]} and ${a[1]} are made from milk.`},
+{q:'Find a fruit or vegetable that you like.',n:1,ok:0,fr:'I like ___.',f:a=>`I like ${a[0]}.`},
+{q:"Find a food that you don't like.",n:1,fr:"I don't like ___.",f:a=>`I don't like ${a[0]}.`}];
+const X=[
+[`These are made with milk. They contain <i>calcium</i>, which is good for both bones and teeth. Yoghurt and cheese are examples of these products too.`,2,['milk','Yoghurt','cheese'],'🥛 Calcium is good for bones and teeth!'],
+[`These are good for us because they give our bodies energy. There are lots of grains to choose from, including brown rice, corn, wheat and oats.`,1,['energy','grains'],'🍞 Grains give our bodies energy!'],
+[`This type of foods contains <i>protein</i> and helps your body to grow and build muscles.`,3,['protein','muscles'],'🍗 Protein helps your body to grow and build muscles!'],
+[`We don't eat as many of these as we should! All vegetables contain <i>vitamins and minerals</i> that give us healthy hair and skin. They also contain <i>fibre</i>, which helps you to digest food properly. Make sure you eat whole fruit and don't drink as much fruit juice because it has a lot of sugar, which isn't good for you!`,0,['vegetables','fruit'],'🥦 Vitamins, minerals and fibre keep us healthy!'],
+[`We should eat foods with less salt and sugar, and we should drink fewer soft drinks too.`,4,['salt','sugar','soft drinks'],'🍫 Eat less salt and sugar!']];
+const S=[['🥛🧀','Dairy products contain calcium.'],['🍞🌽','Grains give our bodies energy.'],['🍗🥚','Protein helps your body to grow.'],['🥦🍌','Vegetables contain vitamins and minerals.'],['🍫🥤','We should eat less salt and sugar.']];
+const R=['vitamins, minerals and fibre','energy','calcium for bones and teeth','protein to grow and build muscles','eat less salt and sugar'];
+const who=()=>names[turn%3]||('Chef '+(turn%3+1)),cap=s=>s[0].toUpperCase()+s.slice(1);
+function snd(ok){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.connect(g);g.connect(AC.destination);o.type='triangle';o.frequency.value=ok?880:180;g.gain.setValueAtTime(.15,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.35);o.start();o.stop(AC.currentTime+.35)}catch(e){}}
+function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-GB';u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+function shake(e){e.classList.remove('shake');void e.offsetWidth;e.classList.add('shake')}
+function fb(ok,msg,ns){const f=$('#fb');f.className='fb '+(ok?'good':'bad');f.innerHTML=msg;snd(ok);if(ok&&!ns){stars++;hud()}}
+function hud(){const m=Math.floor(left/60),s=left%60;$('#clock').textContent='⏱ '+m+':'+String(s).padStart(2,'0');$('#clock').style.background=left<120?'#ffd23f':'#fff';$('#st').textContent='⭐ '+stars;[0,1,2].forEach(i=>$('#p'+i).className='pill'+(stage==i?' on':stage>i?' done':''))}
+function go(s){if(stage<0||stage>2&&!left)return;[()=>order(0),()=>match(0),()=>chef(0)][s]()}
+function intro(){stage=-1;hud();M.innerHTML=`<div class=card><h2>Welcome to the Food Plate Diner! 🍽️</h2><p>Today we find out about healthy food. Chefs, type your names:</p><div class=names>${[0,1,2].map(i=>`<input id=n${i} placeholder="Chef ${i+1}" maxlength=14>`).join('')}</div><button class=btn onclick=begin()>Open the diner ▶</button></div>`}
+function begin(){names=[0,1,2].map(i=>$('#n'+i).value.trim());turn=0;stars=0;left=900;clearInterval(tm);tm=setInterval(()=>{left=Math.max(0,left-1);hud()},1000);order(0)}
+function order(i){stage=0;ti=i;pk=[];hud();const t=T[i];
+M.innerHTML=`<div class="card tk"><b>Order ${'abcd'[i]}:</b> ${t.q}<div class=who>🎤 ${who()}, it's your turn. Tap the food, then say:</div><div class=frame>${t.fr}</div></div>
+<div class=plate>${G.map((g,gi)=>`<div class=grp style="background:${g[1]};color:${g[2]}"><b>${g[0]}</b><div class=fw>${F.map((f,fi)=>f[2]==gi?`<button class=food id=f${fi} onclick=pick(${fi})><span>${f[0]}</span><small>${f[1]}</small></button>`:'').join('')}</div></div>`).join('')}</div>
+<div id=fb class=fb></div><div id=nx></div>`}
+function pick(fi){const t=T[ti];if(pk.length>=t.n||pk.includes(fi))return;const f=F[fi];
+if(t.ok!==undefined&&f[2]!=t.ok){fb(0,'Not quite. Look in the '+(t.ok==2?'blue Dairy products':'green Fruit and vegetables')+' part of the plate.');return}
+pk.push(fi);$('#f'+fi).classList.add('sel');
+if(pk.length<t.n){fb(1,'Good! Find one more.',1);return}
+const s=cap(t.f(pk.map(k=>F[k][1])));fb(1,'🗣️ Say it: <b>'+s+'</b>');say(s);
+$('#nx').innerHTML=`<button class=btn onclick="turn++;${ti<3?'order('+(ti+1)+')':'match(0)'}">Next ▶</button>`}
+function mark(){const x=X[xi];return clue?x[0].replace(new RegExp('\\b('+x[2].join('|')+')\\b','gi'),'<mark>$1</mark>'):x[0]}
+function clueOn(){clue=1;$('#tx').innerHTML=mark()}
+function listen(){say(X[xi][0].replace(/<[^>]+>/g,''))}
+function match(i){stage=1;xi=i;clue=0;hud();
+M.innerHTML=`<div class=prog>${X.map((q,k)=>`<span style="background:${k<xi?G[q[1]][1]:'#fff'}"></span>`).join('')}</div>
+<div class=card><h2>Text ${'ABCDE'[xi]}: which food group?</h2><div class=txt id=tx>${mark()}</div><div class=row><button class="btn alt" onclick=listen()>🔊 Listen</button><button class="btn ghost" onclick=clueOn()>🔎 Clue</button><span class=who>🎤 ${who()}</span></div></div>
+<div class=gb>${G.map((g,gi)=>`<button class=gbtn id=g${gi} style="background:${g[1]};color:${g[2]}" onclick=ansr(${gi})>${g[3]} ${g[0]}</button>`).join('')}</div><div id=fb class=fb></div><div id=nx></div>`}
+function ansr(gi){const x=X[xi];if($('#nx').innerHTML)return;
+if(gi==x[1]){$('#g'+gi).classList.add('sel');fb(1,x[3]);say(x[3].replace(/^\S+\s/,''));
+$('#nx').innerHTML=`<button class=btn onclick="turn++;${xi<4?'match('+(xi+1)+')':'chef(0)'}">Next ▶</button>`}
+else{fb(0,'Try again! Look for the yellow clue words.');clueOn();shake($('#g'+gi))}}
+function chef(i){stage=2;si=i;tray=[];const w=S[i][1].split(' ');let b;do{b=w.map((x,k)=>[k,x]).sort(()=>Math.random()-.5)}while(b.every((p,k)=>p[0]==k));bank=b;hud();draw()}
+function draw(){const w=S[si][1].split(' ');
+M.innerHTML=`<div class=card><h2>Sentence chef 🍳 ${S[si][0]}</h2><div class=who>🎤 ${who()}, tap the words in the right order.</div><div class=tray>${tray.map(k=>`<button class=w onclick=un(${k})>${w[k]}</button>`).join('')||'<span class=ph>Tap the words below…</span>'}</div></div>
+<div class=bank>${bank.filter(b=>!tray.includes(b[0])).map(b=>`<button class="w" onclick=up(${b[0]})>${b[1]}</button>`).join('')}</div><div id=fb class=fb></div><div id=nx></div>`}
+function up(k){tray.push(k);draw();if(tray.length==S[si][1].split(' ').length)chk()}
+function un(k){if($('#nx').innerHTML)return;tray.splice(tray.indexOf(k),1);draw()}
+function chk(){const w=S[si][1].split(' '),s=tray.map(k=>w[k]).join(' ');
+if(s==S[si][1]){fb(1,'🎉 <b>'+s+'</b>');say(s);$('#nx').innerHTML=`<button class=btn onclick="turn++;${si<4?'chef('+(si+1)+')':'end()'}">${si<4?'Next ▶':'Finish 🏁'}</button>`}
+else{fb(0,'Almost! Tap a word in the box to take it back, then try again.');shake($('.tray'))}}
+function end(){stage=3;clearInterval(tm);hud();
+M.innerHTML=`<div class=card><h2>Plate complete! 🏆</h2><p>The team won <b>⭐ ${stars}</b> stars. Well done, chefs!</p><div class=rec>${G.map((g,i)=>`<div style="background:${g[1]};color:${g[2]}">${g[3]} <b>${g[0]}</b><br>${R[i]}</div>`).join('')}</div></div>
+<div class="card tk"><div class=who>Exit ticket: everyone says one sentence.</div><div class=frame>My healthy plate has ___, ___ and ___.</div></div><button class=btn onclick=intro()>Play again ↻</button>`}
+intro();
+</script></body></html>
